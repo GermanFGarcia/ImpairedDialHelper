@@ -25,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.gfgm.veofon.model.AppMode
@@ -128,7 +127,7 @@ class MainActivity : ComponentActivity() {
 // MAIN APP CONTAINER
 @Composable
 fun MainApp() {
-    var currentMode by remember { mutableStateOf(AppMode.PHOTOS) }
+    var currentMode by remember { mutableStateOf(AppMode.CARDS) }
 
     Scaffold(
         bottomBar = {
@@ -144,23 +143,10 @@ fun MainApp() {
                 .padding(paddingValues)
         ) {
             when (currentMode) {
-                AppMode.PHOTOS -> CardModeScreen()
+                AppMode.CARDS -> CardModeScreen()
                 AppMode.LIST -> ListModeScreen()
                 AppMode.KEYPAD -> KeypadModeScreen()
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainAppPreview() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            background = Color.White,
-            surface = Color(0xFFF0F0F0)
-        )
-    ) {
-        MainApp()
     }
 }

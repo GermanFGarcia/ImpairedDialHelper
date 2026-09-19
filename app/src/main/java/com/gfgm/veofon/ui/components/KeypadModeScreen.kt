@@ -63,9 +63,10 @@ fun KeypadModeScreen() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = if (dialedNumber.isEmpty()) "Dial a number" else dialedNumber,
-                fontSize = if (dialedNumber.length > 10) 32.sp else 40.sp,
+                text = if (dialedNumber.isEmpty()) "" else dialedNumber,
+                fontSize = if (dialedNumber.length > 10) 40.sp else 60.sp,
                 fontWeight = FontWeight.Bold,
+                lineHeight = 60.sp,
                 color = if (dialedNumber.isEmpty()) Color.Gray else Color.Black,
                 textAlign = TextAlign.Center
             )
@@ -117,15 +118,15 @@ fun KeypadModeScreen() {
                 },
                 modifier = Modifier
                     .weight(1f)
-                    .height(65.dp),
+                    .height(80.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF05050))
             ) {
                 Icon(
                     imageVector = Icons.Default.Backspace,
                     contentDescription = "Delete",
-                    tint = Color.Black,
-                    modifier = Modifier.size(28.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(40.dp)
                 )
             }
 
@@ -136,19 +137,17 @@ fun KeypadModeScreen() {
                 },
                 modifier = Modifier
                     .weight(2f)
-                    .height(65.dp),
+                    .height(80.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF50A030))
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Phone,
                         contentDescription = "Call",
                         tint = Color.White,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(40.dp)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text("CALL", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         }
@@ -168,10 +167,10 @@ fun KeypadButton(
             playKeyHaptics(view)
             onClick()
         },
-        modifier = modifier.height(62.dp),
+        modifier = modifier.height(80.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE3F2FD))
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF505050))
     ) {
-        Text(text = text, fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0D47A1))
+        Text(text = text, fontSize = 40.sp, fontWeight = FontWeight.Bold, color = Color.White)
     }
 }

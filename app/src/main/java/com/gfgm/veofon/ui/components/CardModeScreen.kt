@@ -3,7 +3,15 @@ package com.gfgm.veofon.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -91,13 +99,13 @@ fun ContactCard(
             .height(180.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF606060)),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -105,14 +113,14 @@ fun ContactCard(
             // contact photo: shows picture if photoUri or photoResId exists, otherwise fallback icon
             ContactAvatar(contact = contact)
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             // contact Name
             Text(
                 text = contact.name,
-                fontSize = 20.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = Color.White,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -133,11 +141,10 @@ fun ContactCard(
 
 @Composable
 private fun ContactAvatar(contact: DirectContact) {
-    val avatarSize = 80.dp
+    val avatarSize = 120.dp
     val avatarModifier = Modifier
         .size(avatarSize)
         .clip(CircleShape)
-        .border(3.dp, Color(0xFF0D47A1), CircleShape)
 
     when {
         // 1. Uri photo fetched from phone contacts

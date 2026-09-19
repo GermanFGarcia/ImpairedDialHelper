@@ -144,15 +144,15 @@ fun ListModeScreen() {
                 },
                 modifier = Modifier
                     .weight(1f)
-                    .height(70.dp),
+                    .height(80.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF404040))
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowUpward,
                     contentDescription = "Up",
-                    tint = Color.Black,
-                    modifier = Modifier.size(36.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(50.dp)
                 )
             }
 
@@ -169,15 +169,15 @@ fun ListModeScreen() {
                 },
                 modifier = Modifier
                     .weight(1f)
-                    .height(70.dp),
+                    .height(80.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF404040))
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowDownward,
                     contentDescription = "Down",
-                    tint = Color.Black,
-                    modifier = Modifier.size(36.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(50.dp)
                 )
             }
 
@@ -189,19 +189,17 @@ fun ListModeScreen() {
                 },
                 modifier = Modifier
                     .weight(2f)
-                    .height(70.dp),
+                    .height(80.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF50A030))
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Phone,
                         contentDescription = "Call",
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(50.dp)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text("CALL", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         }

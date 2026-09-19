@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.KeyboardAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -49,11 +49,11 @@ fun ModeNavigationBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             when (currentMode) {
-                AppMode.PHOTOS -> {
+                AppMode.CARDS -> {
                     // Show LIST and KEYPAD buttons
                     NavigationButton(
-                        text = "LIST",
-                        icon = Icons.Default.FormatListNumbered,
+                        text = "",
+                        icon = Icons.Default.FormatListBulleted,
                         modifier = Modifier.weight(1f),
                         onClick = {
                             playKeyHaptics(view)
@@ -61,8 +61,8 @@ fun ModeNavigationBar(
                         }
                     )
                     NavigationButton(
-                        text = "KEYPAD",
-                        icon = Icons.Default.Phone,
+                        text = "",
+                        icon = Icons.Default.KeyboardAlt,
                         modifier = Modifier.weight(1f),
                         onClick = {
                             playKeyHaptics(view)
@@ -74,17 +74,17 @@ fun ModeNavigationBar(
                 AppMode.LIST -> {
                     // Show PHOTOS and KEYPAD buttons
                     NavigationButton(
-                        text = "PHOTOS",
+                        text = "",
                         icon = Icons.Default.GridView,
                         modifier = Modifier.weight(1f),
                         onClick = {
                             playKeyHaptics(view)
-                            onModeSelected(AppMode.PHOTOS)
+                            onModeSelected(AppMode.CARDS)
                         }
                     )
                     NavigationButton(
-                        text = "KEYPAD",
-                        icon = Icons.Default.Phone,
+                        text = "",
+                        icon = Icons.Default.KeyboardAlt,
                         modifier = Modifier.weight(1f),
                         onClick = {
                             playKeyHaptics(view)
@@ -96,17 +96,17 @@ fun ModeNavigationBar(
                 AppMode.KEYPAD -> {
                     // Show PHOTOS and LIST buttons
                     NavigationButton(
-                        text = "PHOTOS",
+                        text = "",
                         icon = Icons.Default.GridView,
                         modifier = Modifier.weight(1f),
                         onClick = {
                             playKeyHaptics(view)
-                            onModeSelected(AppMode.PHOTOS)
+                            onModeSelected(AppMode.CARDS)
                         }
                     )
                     NavigationButton(
-                        text = "LIST",
-                        icon = Icons.Default.FormatListNumbered,
+                        text = "",
+                        icon = Icons.Default.FormatListBulleted,
                         modifier = Modifier.weight(1f),
                         onClick = {
                             playKeyHaptics(view)
@@ -136,9 +136,11 @@ fun NavigationButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Icon(imageVector = icon, contentDescription = text, tint = Color.White, modifier = Modifier.size(28.dp))
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = text, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Icon(imageVector = icon, contentDescription = text, tint = Color.White, modifier = Modifier.size(40.dp))
+            if (!text.isNullOrBlank()) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = text, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            }
         }
     }
 }
