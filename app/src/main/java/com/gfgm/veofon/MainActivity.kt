@@ -1,9 +1,16 @@
 package com.gfgm.veofon
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
+import android.telephony.TelephonyManager
 import android.view.HapticFeedbackConstants
 import android.view.SoundEffectConstants
 import android.view.View
@@ -14,7 +21,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -31,8 +48,24 @@ import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,8 +76,11 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.launch
 
 enum class AppMode {
@@ -52,8 +88,29 @@ enum class AppMode {
 }
 
 class MainActivity : ComponentActivity() {
+
+    private var wasInCall = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Request permissions for making calls and monitoring call state
+        val permissions = arrayOf(
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.READ_CONTACTS
+        )
+
+        val missingPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (missingPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1)
+        }
+
+        setupCallListener()
+
         setContent {
             MaterialTheme(
                 colorScheme = lightColorScheme(
@@ -70,7 +127,57 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun setupCallListener() {
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+        if (Build.VERSION_CODES.S <= Build.VERSION.SDK_INT) {
+            // Modern Android 12+ API
+            telephonyManager.registerTelephonyCallback(
+                mainExecutor,
+                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                    override fun onCallStateChanged(state: Int) {
+                        handleCallStateChange(state)
+                    }
+                }
+            )
+        } else {
+            // Legacy Android API
+            @Suppress("DEPRECATION")
+            telephonyManager.listen(object : PhoneStateListener() {
+                @Deprecated("Deprecated in Java")
+                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                    handleCallStateChange(state)
+                }
+            }, PhoneStateListener.LISTEN_CALL_STATE)
+        }
+    }
+
+    private fun handleCallStateChange(state: Int) {
+        when (state) {
+            TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING -> {
+                // Call started/active
+                wasInCall = true
+            }
+            TelephonyManager.CALL_STATE_IDLE -> {
+                // Call ended: Bring Veofon back to foreground
+                if (wasInCall) {
+                    wasInCall = false
+                    bringAppToForeground()
+                }
+            }
+        }
+    }
+
+    private fun bringAppToForeground() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
+        startActivity(intent)
+    }
+
 }
+
 
 // Data model for a contact
 data class DirectContact(
@@ -83,10 +190,14 @@ data class DirectContact(
 // Helper to launch direct calls
 fun makePhoneCall(context: Context, number: String) {
     if (number.isNotEmpty()) {
-        val intent = Intent(Intent.ACTION_DIAL).apply {
+        val intent = Intent(Intent.ACTION_CALL).apply {
             data = Uri.parse("tel:${Uri.encode(number)}")
         }
-        context.startActivity(intent)
+        try {
+            context.startActivity(intent)
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
     }
 }
 
@@ -168,6 +279,7 @@ fun ModeNavigationBottomBar(
                         }
                     )
                 }
+
                 AppMode.LIST -> {
                     // Show PHOTOS and KEYPAD buttons
                     BottomNavButton(
@@ -189,6 +301,7 @@ fun ModeNavigationBottomBar(
                         }
                     )
                 }
+
                 AppMode.KEYPAD -> {
                     // Show PHOTOS and LIST buttons
                     BottomNavButton(
@@ -249,12 +362,13 @@ fun PhotosModeScreen() {
 
     // List of 6 contacts for Photo Mode
     val photoContacts = listOf(
-        DirectContact("Marta", "611222333", "Daughter", null),
-        DirectContact("Jordi", "644555666", "Son", null),
-        DirectContact("Anna", "677888999", "Granddaughter", null),
-        DirectContact("Pau", "600111222", "Grandson", null),
-        DirectContact("Dr. Garcia", "933112233", "Doctor", null),
-        DirectContact("Emergency", "112", "SOS", null)
+        DirectContact("Marta", "666560569", "Hija", null),
+        DirectContact("German", "637548550", "Hijo", null),
+        DirectContact("Gemma", "617560930", "", null),
+        DirectContact("Jordi", "644555666", "", null),
+        DirectContact("Anna", "677888999", "", null),
+        DirectContact("Pau", "600111222", "", null),
+        DirectContact("Emergencias", "112", "SOS", null)
     )
 
     Column(
@@ -361,17 +475,10 @@ fun ListModeScreen() {
     val view = LocalView.current
     val coroutineScope = rememberCoroutineScope()
 
-    val contactsList = remember {
-        listOf(
-            DirectContact("Marta", "611222333", "Daughter"),
-            DirectContact("Jordi", "644555666", "Son"),
-            DirectContact("Anna", "677888999", "Granddaughter"),
-            DirectContact("Pau", "600111222", "Grandson"),
-            DirectContact("Dr. Garcia", "933112233", "Doctor"),
-            DirectContact("Pharmacy", "933998877", "Services"),
-            DirectContact("Taxi", "933000000", "Transport"),
-            DirectContact("Emergency", "112", "SOS")
-        )
+    var contactsList by remember { mutableStateOf<List<DirectContact>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        contactsList = fetchSystemContacts(context)
     }
 
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -513,6 +620,50 @@ fun ListModeScreen() {
     }
 }
 
+fun fetchSystemContacts(context: Context): List<DirectContact> {
+    val contactsList = mutableListOf<DirectContact>()
+
+    // Verifiquem si tenim permís abans de consultar
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+        != PackageManager.PERMISSION_GRANTED) {
+        return contactsList
+    }
+
+    val contentResolver = context.contentResolver
+    val cursor = contentResolver.query(
+        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        arrayOf(
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+        ),
+        null,
+        null,
+        "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} ASC" // Ordenat alfabèticament
+    )
+
+    cursor?.use {
+        val nameIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        val numberIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+
+        while (it.moveToNext()) {
+            val name = it.getString(nameIndex) ?: "Sense nom"
+            val number = it.getString(numberIndex) ?: ""
+
+            if (number.isNotEmpty()) {
+                contactsList.add(
+                    DirectContact(
+                        name = name,
+                        number = number,
+                        relationship = "Contacte" // O etiqueta per defecte
+                    )
+                )
+            }
+        }
+    }
+
+    return contactsList
+}
+
 // -------------------------------------------------------------
 // 3. KEYPAD MODE (NUMERIC KEYPAD)
 // -------------------------------------------------------------
@@ -650,5 +801,18 @@ fun KeypadButton(
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE3F2FD))
     ) {
         Text(text = text, fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0D47A1))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainAppPreview() {
+    MaterialTheme(
+        colorScheme = lightColorScheme(
+            background = Color.White,
+            surface = Color(0xFFF0F0F0)
+        )
+    ) {
+        MainApp()
     }
 }
