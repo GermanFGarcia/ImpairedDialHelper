@@ -32,7 +32,7 @@ import com.gfgm.veofon.model.AppMode
 import com.gfgm.veofon.ui.components.KeypadModeScreen
 import com.gfgm.veofon.ui.components.ListModeScreen
 import com.gfgm.veofon.ui.components.ModeNavigationBar
-import com.gfgm.veofon.ui.components.PhotosModeScreen
+import com.gfgm.veofon.ui.components.CardModeScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -144,7 +144,7 @@ fun MainApp() {
                 .padding(paddingValues)
         ) {
             when (currentMode) {
-                AppMode.PHOTOS -> PhotosModeScreen()
+                AppMode.PHOTOS -> CardModeScreen()
                 AppMode.LIST -> ListModeScreen()
                 AppMode.KEYPAD -> KeypadModeScreen()
             }
