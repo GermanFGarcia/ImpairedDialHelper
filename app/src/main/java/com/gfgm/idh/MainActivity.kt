@@ -1,23 +1,16 @@
 package com.gfgm.idh
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
-import android.telephony.TelephonyManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,15 +21,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.gfgm.idh.model.AppMode
+import com.gfgm.idh.ui.components.CardModeScreen
 import com.gfgm.idh.ui.components.KeypadModeScreen
 import com.gfgm.idh.ui.components.ListModeScreen
 import com.gfgm.idh.ui.components.ModeNavigationBar
-import com.gfgm.idh.ui.components.CardModeScreen
 import com.gfgm.idh.ui.theme.AppTheme
+import com.gfgm.idh.util.CallMonitor
 
 class MainActivity : ComponentActivity() {
 
-    private var wasInCall = false
+    private lateinit var callMonitor: CallMonitor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +48,7 @@ class MainActivity : ComponentActivity() {
             ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1)
         }
 
-        setupCallListener()
+        callMonitor = CallMonitor(this)
 
         setContent {
             AppTheme {
@@ -65,52 +59,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun setupCallListener() {
-        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
-        if (Build.VERSION_CODES.S <= Build.VERSION.SDK_INT) {
-            // Modern Android 12+ API
-            telephonyManager.registerTelephonyCallback(mainExecutor,
-                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                    override fun onCallStateChanged(state: Int) {
-                        handleCallStateChange(state)
-                    }
-                })
-        } else {
-            // Legacy Android API
-            @Suppress("DEPRECATION") telephonyManager.listen(object : PhoneStateListener() {
-                @Deprecated("Deprecated in Java")
-                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                    handleCallStateChange(state)
-                }
-            }, PhoneStateListener.LISTEN_CALL_STATE)
-        }
-    }
-
-    private fun handleCallStateChange(state: Int) {
-        when (state) {
-            TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING -> {
-                // Call started/active
-                wasInCall = true
+    override fun onStart() {
+        super.onStart()
+        callMonitor.startMonitoring {
+            // when a call ends, brin this app to top level
+            val intent = Intent(this, MainActivity::class.java).apply {
+                addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
             }
-
-            TelephonyManager.CALL_STATE_IDLE -> {
-                // Call ended: Bring idh back to foreground
-                if (wasInCall) {
-                    wasInCall = false
-                    bringAppToForeground()
-                }
-            }
+            startActivity(intent)
         }
     }
 
-    private fun bringAppToForeground() {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        }
-        startActivity(intent)
+    override fun onStop() {
+        super.onStop()
+        callMonitor.stopMonitoring()
     }
-
 }
 
 // MAIN APP CONTAINER
