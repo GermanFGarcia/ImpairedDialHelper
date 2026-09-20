@@ -1,4 +1,4 @@
-package com.gfgm.veofon.util
+package com.gfgm.idh.util
 
 import android.view.HapticFeedbackConstants
 import android.view.SoundEffectConstants

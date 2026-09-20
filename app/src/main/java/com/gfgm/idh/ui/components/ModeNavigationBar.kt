@@ -1,4 +1,4 @@
-package com.gfgm.veofon.ui.components
+package com.gfgm.idh.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gfgm.veofon.model.AppMode
-import com.gfgm.veofon.util.playKeyHaptics
+import com.gfgm.idh.model.AppMode
+import com.gfgm.idh.util.playKeyHaptics
 
 // BOTTOM NAVIGATION BAR WITH 2 BUTTONS LEADING TO OTHER MODES
 @Composable

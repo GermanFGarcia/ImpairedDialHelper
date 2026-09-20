@@ -1,4 +1,4 @@
-package com.gfgm.veofon.ui.components
+package com.gfgm.idh.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,10 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.gfgm.veofon.model.DirectContact
-import com.gfgm.veofon.util.fetchFavoriteContacts
-import com.gfgm.veofon.util.makePhoneCall
-import com.gfgm.veofon.util.playKeyHaptics
+import com.gfgm.idh.model.DirectContact
+import com.gfgm.idh.util.fetchFavoriteContacts
+import com.gfgm.idh.util.makePhoneCall
+import com.gfgm.idh.util.playKeyHaptics
 
 // CARD MODE (DIRECT CALL BUTTONS WITH PHOTOS)
 

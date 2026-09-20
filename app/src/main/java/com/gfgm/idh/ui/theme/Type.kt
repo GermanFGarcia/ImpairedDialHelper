@@ -1,4 +1,4 @@
-package com.gfgm.veofon.ui.theme
+package com.gfgm.idh.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.PlatformTextStyle
@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.gfgm.veofon.R
+import com.gfgm.idh.R
 
 val OpenSansFont = FontFamily(
     Font(R.font.open_sans_bold, FontWeight.Bold),

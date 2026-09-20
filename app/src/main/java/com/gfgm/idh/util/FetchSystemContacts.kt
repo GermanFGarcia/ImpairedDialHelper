@@ -1,11 +1,11 @@
-package com.gfgm.veofon.util
+package com.gfgm.idh.util
 
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.provider.ContactsContract
 import androidx.core.content.ContextCompat
-import com.gfgm.veofon.model.DirectContact
+import com.gfgm.idh.model.DirectContact
 
 fun fetchSystemContacts(context: Context): List<DirectContact> {
     val contactsList = mutableListOf<DirectContact>()

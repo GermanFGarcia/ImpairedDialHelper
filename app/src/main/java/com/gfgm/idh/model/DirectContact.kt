@@ -1,4 +1,4 @@
-package com.gfgm.veofon.model
+package com.gfgm.idh.model
 
 import androidx.annotation.DrawableRes
 

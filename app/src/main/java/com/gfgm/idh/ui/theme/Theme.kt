@@ -1,4 +1,4 @@
-package com.gfgm.veofon.ui.theme
+package com.gfgm.idh.ui.theme
 
 import android.app.Activity
 import android.os.Build

@@ -1,4 +1,4 @@
-package com.gfgm.veofon
+package com.gfgm.idh
 
 import android.Manifest
 import android.content.Context
@@ -27,12 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.gfgm.veofon.model.AppMode
-import com.gfgm.veofon.ui.components.KeypadModeScreen
-import com.gfgm.veofon.ui.components.ListModeScreen
-import com.gfgm.veofon.ui.components.ModeNavigationBar
-import com.gfgm.veofon.ui.components.CardModeScreen
-import com.gfgm.veofon.ui.theme.AppTheme
+import com.gfgm.idh.model.AppMode
+import com.gfgm.idh.ui.components.KeypadModeScreen
+import com.gfgm.idh.ui.components.ListModeScreen
+import com.gfgm.idh.ui.components.ModeNavigationBar
+import com.gfgm.idh.ui.components.CardModeScreen
+import com.gfgm.idh.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
             }
 
             TelephonyManager.CALL_STATE_IDLE -> {
-                // Call ended: Bring Veofon back to foreground
+                // Call ended: Bring idh back to foreground
                 if (wasInCall) {
                     wasInCall = false
                     bringAppToForeground()

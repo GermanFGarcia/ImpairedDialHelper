@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.gfgm.veofon"
+    namespace = "com.gfgm.idh"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.gfgm.veofon"
+        applicationId = "com.gfgm.idh"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "VeoFon"
+rootProject.name = "IDH"
 include(":app")
  

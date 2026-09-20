@@ -1,4 +1,4 @@
-package com.gfgm.veofon.ui.theme
+package com.gfgm.idh.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package com.gfgm.veofon.ui.components
+package com.gfgm.idh.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,8 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gfgm.veofon.util.makePhoneCall
-import com.gfgm.veofon.util.playKeyHaptics
+import com.gfgm.idh.util.makePhoneCall
+import com.gfgm.idh.util.playKeyHaptics
 
 // KEYPAD MODE (NUMERIC KEYPAD)
 
