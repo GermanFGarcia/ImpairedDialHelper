@@ -64,7 +64,7 @@ fun KeypadModeScreen() {
         ) {
             Text(
                 text = if (dialedNumber.isEmpty()) "" else dialedNumber,
-                fontSize = if (dialedNumber.length > 10) 40.sp else 60.sp,
+                fontSize = if (dialedNumber.length > 9) 36.sp else 60.sp,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 60.sp,
                 color = if (dialedNumber.isEmpty()) Color.Gray else Color.Black,
