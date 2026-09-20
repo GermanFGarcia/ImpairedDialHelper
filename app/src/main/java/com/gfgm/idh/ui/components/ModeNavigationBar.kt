@@ -114,6 +114,8 @@ fun ModeNavigationBar(
                         }
                     )
                 }
+
+                AppMode.SETTINGS -> {}
             }
         }
     }
