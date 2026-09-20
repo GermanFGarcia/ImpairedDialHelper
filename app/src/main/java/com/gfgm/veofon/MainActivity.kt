@@ -32,6 +32,7 @@ import com.gfgm.veofon.ui.components.KeypadModeScreen
 import com.gfgm.veofon.ui.components.ListModeScreen
 import com.gfgm.veofon.ui.components.ModeNavigationBar
 import com.gfgm.veofon.ui.components.CardModeScreen
+import com.gfgm.veofon.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -42,9 +43,7 @@ class MainActivity : ComponentActivity() {
 
         // Request permissions for making calls and monitoring call state
         val permissions = arrayOf(
-            Manifest.permission.CALL_PHONE,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.READ_CONTACTS
+            Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS
         )
 
         val missingPermissions = permissions.filter {
@@ -58,16 +57,8 @@ class MainActivity : ComponentActivity() {
         setupCallListener()
 
         setContent {
-            MaterialTheme(
-                colorScheme = lightColorScheme(
-                    background = Color.White,
-                    surface = Color(0xFFF0F0F0)
-                )
-            ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.White
-                ) {
+            AppTheme {
+                Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
                     MainApp()
                 }
             }
@@ -79,18 +70,15 @@ class MainActivity : ComponentActivity() {
 
         if (Build.VERSION_CODES.S <= Build.VERSION.SDK_INT) {
             // Modern Android 12+ API
-            telephonyManager.registerTelephonyCallback(
-                mainExecutor,
+            telephonyManager.registerTelephonyCallback(mainExecutor,
                 object : TelephonyCallback(), TelephonyCallback.CallStateListener {
                     override fun onCallStateChanged(state: Int) {
                         handleCallStateChange(state)
                     }
-                }
-            )
+                })
         } else {
             // Legacy Android API
-            @Suppress("DEPRECATION")
-            telephonyManager.listen(object : PhoneStateListener() {
+            @Suppress("DEPRECATION") telephonyManager.listen(object : PhoneStateListener() {
                 @Deprecated("Deprecated in Java")
                 override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                     handleCallStateChange(state)
@@ -105,6 +93,7 @@ class MainActivity : ComponentActivity() {
                 // Call started/active
                 wasInCall = true
             }
+
             TelephonyManager.CALL_STATE_IDLE -> {
                 // Call ended: Bring Veofon back to foreground
                 if (wasInCall) {
@@ -129,14 +118,9 @@ class MainActivity : ComponentActivity() {
 fun MainApp() {
     var currentMode by remember { mutableStateOf(AppMode.CARDS) }
 
-    Scaffold(
-        bottomBar = {
-            ModeNavigationBar(
-                currentMode = currentMode,
-                onModeSelected = { newMode -> currentMode = newMode }
-            )
-        }
-    ) { paddingValues ->
+    Scaffold(bottomBar = {
+        ModeNavigationBar(currentMode = currentMode, onModeSelected = { newMode -> currentMode = newMode })
+    }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
